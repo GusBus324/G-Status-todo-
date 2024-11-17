@@ -43,6 +43,6 @@ class ToDo(Base):
         return f'<ToDo {self.title}>'
     
 # Database setup
-engine = create_engine('sqlite:///todo.db')
+engine = create_engine('sqlite:///database.db')
 Base.metadata.create_all(engine)
 print('Database setup complete')
