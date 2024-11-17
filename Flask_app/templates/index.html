@@ -6,16 +6,37 @@
     <title>G Status</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light background */
+            color: #343a40; /* Dark text */
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .btn-primary {
+            background-color: #007bff; /* Blue button */
+            border-color: #007bff;
+        }
+        .btn-secondary {
+            background-color: #28a745; /* Green button */
+            border-color: #28a745;
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Red button */
+            border-color: #dc3545;
+        }
+    </style>
 </head>
 <body class="text-center">
     <div class="container">
         <h1><strong>Welcome to G Status</strong></h1>
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="mb-4" style="max-width: 150px;" />
         <!-- Login and Signup buttons -->
-        <a href="{{ url_for('login') }}" class="btn btn-primary mx-2">Login</a>
-        <a href="{{ url_for('signup') }}" class="btn btn-secondary mx-2">Sign Up</a>
-        <div class="mt-5">
-            <!-- Logo -->
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="mb-4" style="max-width: 150px;" />
+        <div class="mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-primary mx-2">Login</a>
+            <a href="{{ url_for('signup') }}" class="btn btn-secondary mx-2">Sign Up</a>
         </div>
     </div>
 </body>
