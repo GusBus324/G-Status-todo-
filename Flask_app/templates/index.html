@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G Status</title>
+    <title>Signup - G Status</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
-            background-color: #f8f9fa; /* Light background */
-            color: #343a40; /* Dark text */
+            background-color: #e0f7fa;
+            color: #004d40;
         }
         .container {
             margin-top: 50px;
         }
         .btn-primary {
-            background-color: #007bff; /* Blue button */
-            border-color: #007bff;
+            background-color: #00796b;
+            border-color: #00796b;
+        }
+        .btn-primary:hover {
+            background-color: #004d40;
+            border-color: #004d40;
         }
         .btn-secondary {
             background-color: #28a745; /* Green button */
@@ -30,13 +34,26 @@
 </head>
 <body class="text-center">
     <div class="container">
-        <h1><strong>Welcome to G Status</strong></h1>
+        <h1>Signup for G Status</h1>
+        <p><strong>G Status</strong> - The fastest and most efficient task manager.</p>
         <!-- Logo -->
         <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="mb-4" style="max-width: 150px;" />
-        <!-- Login and Signup buttons -->
-        <div class="mt-4">
-            <a href="{{ url_for('login') }}" class="btn btn-primary mx-2">Login</a>
-            <a href="{{ url_for('signup') }}" class="btn btn-secondary mx-2">Sign Up</a>
+        <form method="POST" class="text-left">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Signup</button>
+        </form>
+        <div class="mt-3">
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Already have an account? Login</a>
+        </div>
+        <div class="mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-danger">Reload Page</a>
         </div>
     </div>
 </body>
