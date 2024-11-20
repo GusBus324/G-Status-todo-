@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, session, redirect, url
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from db_create import User  # Import the User model from your models file
+from db_create import User, ToDo  # Import the User and ToDo models from your models file
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure, random key
@@ -19,13 +19,17 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        # Retrieve data from the form
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Query the database to find the user with the given username
         user = db_session.query(User).filter_by(username=username).first()
+        # Check if the user exists and if the password matches
         if user and check_password_hash(user.password, password):
+            # Store the user's ID in the session
             session['user_id'] = user.id
-            flash('Login successful!', 'success')
-            return redirect(url_for('index'))
+            flash('Login successful!', 'info')
+            return redirect(url_for('dashboard'))  # Redirect to the dashboard
         else:
             flash('Invalid username or password', 'danger')
     return render_template('login.html')
@@ -35,6 +39,10 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        existing_user = db_session.query(User).filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different username.', 'danger')
+            return redirect(url_for('signup'))
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, password=hashed_password)
         db_session.add(new_user)
@@ -42,6 +50,44 @@ def signup():
         flash('Signup successful! Please log in.', 'success')
         return redirect(url_for('login'))
     return render_template('signup.html')
+
+@app.route('/dashboard')
+def dashboard():
+    # Check if the user is logged in
+    if 'user_id' not in session:
+        flash('Please log in to access the dashboard.', 'warning')
+        return redirect(url_for('login'))
+    # Retrieve the user's to-dos from the database
+    user_id = session['user_id']
+    user = db_session.query(User).get(user_id)
+    return render_template('dashboard.html', todos=user.todos)
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('index'))
+
+# Add this to app.py or run as a separate script
+# Define user details
+username = "GusSimmonds"
+password = "secure_password"  # Set your chosen password here
+
+# Check if the user already exists
+existing_user = db_session.query(User).filter_by(username=username).first()
+if not existing_user:
+    # Hash the password
+    hashed_password = generate_password_hash(password)
+
+    # Create a new user instance
+    new_user = User(username=username, password=hashed_password)
+
+    # Add the user to the database
+    db_session.add(new_user)
+    db_session.commit()
+    print("User 'GusSimmonds' added successfully with a hashed password.")
+else:
+    print("User 'GusSimmonds' already exists.")
 
 if __name__ == '__main__':
     app.run(debug=True)

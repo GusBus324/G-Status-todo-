@@ -27,6 +27,16 @@
 <body class="text-center">
     <div class="container">
         <h1>Login to G Status</h1>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <form method="POST" class="text-left">
             <div class="form-group">
                 <label for="username">Username:</label>
