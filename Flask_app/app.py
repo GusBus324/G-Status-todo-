@@ -62,6 +62,25 @@ def dashboard():
     user = db_session.query(User).get(user_id)
     return render_template('dashboard.html', todos=user.todos)
 
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    # Check if the user is logged in
+    if 'user_id' not in session:
+        flash('Please log in to add tasks.', 'warning')
+        return redirect(url_for('login'))
+    # Retrieve data from the form
+    title = request.form['title']
+    description = request.form['description']
+    category = request.form['category']
+    due_date = request.form['due_date']
+    user_id = session['user_id']
+    # Create a new task
+    new_task = ToDo(title=title, description=description, category=category, due_date=due_date, user_id=user_id)
+    db_session.add(new_task)
+    db_session.commit()
+    flash('Task added successfully!', 'success')
+    return redirect(url_for('dashboard'))
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
@@ -91,4 +110,3 @@ else:
 
 if __name__ == '__main__':
     app.run(debug=True)
-
