@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -19,6 +19,8 @@ class ToDo(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String(255), nullable=True)
+    category = Column(String(50), nullable=False)
+    due_date = Column(Date, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     def __repr__(self):

@@ -44,30 +44,100 @@
 <body>
     <div class="container mt-5">
         <h1>Your To-Do List</h1>
-        <!-- Form to add new tasks -->
-        <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
-            <div class="form-group">
-                <label for="title">Task Title:</label>
-                <input type="text" id="title" name="title" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Task Description:</label>
-                <input type="text" id="description" name="description" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Add Task</button>
-        </form>
-        <ul class="list-group">
-            {% for todo in todos %}
-                <li class="list-group-item">
-                    {{ todo.title }} - {{ todo.description }}
-                    {% if todo.done %}
-                        <span class="badge badge-success">Done</span>
-                    {% else %}
-                        <span class="badge badge-warning">Pending</span>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+        <!-- Sections for Assessments, Notes, and Homeworks -->
+        <div class="mb-4">
+            <h2>Assessments</h2>
+            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
+                <input type="hidden" name="category" value="Assessments">
+                <div class="form-group">
+                    <label for="title">Task Title:</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Task Description:</label>
+                    <input type="text" id="description" name="description" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due Date:</label>
+                    <input type="date" id="due_date" name="due_date" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Assessment</button>
+            </form>
+            <ul class="list-group">
+                {% for todo in todos if todo.category == 'Assessments' %}
+                    <li class="list-group-item">
+                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
+                        {% if todo.done %}
+                            <span class="badge badge-success">Done</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="mb-4">
+            <h2>Notes</h2>
+            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
+                <input type="hidden" name="category" value="Notes">
+                <div class="form-group">
+                    <label for="title">Task Title:</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Task Description:</label>
+                    <input type="text" id="description" name="description" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due Date:</label>
+                    <input type="date" id="due_date" name="due_date" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Note</button>
+            </form>
+            <ul class="list-group">
+                {% for todo in todos if todo.category == 'Notes' %}
+                    <li class="list-group-item">
+                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
+                        {% if todo.done %}
+                            <span class="badge badge-success">Done</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="mb-4">
+            <h2>Homeworks</h2>
+            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
+                <input type="hidden" name="category" value="Homeworks">
+                <div class="form-group">
+                    <label for="title">Task Title:</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Task Description:</label>
+                    <input type="text" id="description" name="description" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due Date:</label>
+                    <input type="date" id="due_date" name="due_date" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Homework</button>
+            </form>
+            <ul class="list-group">
+                {% for todo in todos if todo.category == 'Homeworks' %}
+                    <li class="list-group-item">
+                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
+                        {% if todo.done %}
+                            <span class="badge badge-success">Done</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         <a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
     </div>
 </body>

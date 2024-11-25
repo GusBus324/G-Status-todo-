@@ -87,26 +87,5 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
-# Add this to app.py or run as a separate script
-# Define user details
-username = "GusSimmonds"
-password = "secure_password"  # Set your chosen password here
-
-# Check if the user already exists
-existing_user = db_session.query(User).filter_by(username=username).first()
-if not existing_user:
-    # Hash the password
-    hashed_password = generate_password_hash(password)
-
-    # Create a new user instance
-    new_user = User(username=username, password=hashed_password)
-
-    # Add the user to the database
-    db_session.add(new_user)
-    db_session.commit()
-    print("User 'GusSimmonds' added successfully with a hashed password.")
-else:
-    print("User 'GusSimmonds' already exists.")
-
 if __name__ == '__main__':
     app.run(debug=True)
