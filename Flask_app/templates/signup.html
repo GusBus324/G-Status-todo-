@@ -24,13 +24,10 @@
         }
     </style>
 </head>
-<body class="text-center">
+<body>
     <div class="container">
-        <h1>Signup for G Status</h1>
-        <p><strong>G Status</strong> - The fastest and most efficient task manager.</p>
-        <!-- Logo -->
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="mb-4" style="max-width: 150px;" />
-        <form method="POST" class="text-left">
+        <h2>Signup</h2>
+        <form method="POST" action="{{ url_for('signup') }}">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" class="form-control" required>

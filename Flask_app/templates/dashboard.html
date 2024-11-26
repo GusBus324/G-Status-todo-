@@ -1,143 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <style>
         body {
+            font-family: Arial, sans-serif;
             background-color: #e0f7fa; /* Light blue background */
-            color: #004d40; /* Dark green text */
+            margin: 0;
+            padding: 0;
         }
         .container {
-            margin-top: 50px;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333; /* Dark grey */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555; /* Medium grey */
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         .btn-primary {
-            background-color: #0288d1; /* Light blue button */
-            border-color: #0288d1;
+            background-color: #0277bd; /* Dark blue */
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         .btn-primary:hover {
-            background-color: #0277bd; /* Darker blue button on hover */
-            border-color: #0277bd;
+            background-color: #01579b; /* Darker blue */
         }
-        .btn-danger {
-            background-color: #b0bec5; /* Light gray button */
-            border-color: #b0bec5;
-        }
-        .btn-danger:hover {
-            background-color: #90a4ae; /* Darker gray button on hover */
-            border-color: #90a4ae;
+        .list-group {
+            list-style: none;
+            padding: 0;
         }
         .list-group-item {
-            background-color: #e0f7fa; /* Light blue list item */
-            color: #004d40; /* Dark green text */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
         }
         .badge-success {
-            background-color: #81c784; /* Light green badge */
+            background-color: #388e3c; /* Dark green */
+            color: #ffffff;
         }
         .badge-warning {
-            background-color: #ffb74d; /* Light orange badge */
+            background-color: #fbc02d; /* Dark yellow */
+            color: #ffffff;
+        }
+        .btn-danger {
+            background-color: #d32f2f; /* Dark red */
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-danger:hover {
+            background-color: #b71c1c; /* Darker red */
+        }
+        .btn-secondary {
+            background-color: #6c757d; /* Grey */
+            color: #daf464;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker grey */
+        }
+        .mt-3 {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <h1>Your To-Do List</h1>
-        <!-- Sections for Assessments, Notes, and Homeworks -->
-        <div class="mb-4">
-            <h2>Assessments</h2>
-            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
-                <input type="hidden" name="category" value="Assessments">
-                <div class="form-group">
-                    <label for="title">Task Title:</label>
-                    <input type="text" id="title" name="title" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Task Description:</label>
-                    <input type="text" id="description" name="description" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="due_date">Due Date:</label>
-                    <input type="date" id="due_date" name="due_date" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Assessment</button>
-            </form>
-            <ul class="list-group">
-                {% for todo in todos if todo.category == 'Assessments' %}
-                    <li class="list-group-item">
-                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
+        <!-- Form to add new tasks -->
+        <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
+            <div class="form-group">
+                <label for="title">Task Title:</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Task Description:</label>
+                <input type="text" id="description" name="description" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+        <ul class="list-group">
+            {% for todo in todos %}
+                <li class="list-group-item">
+                    <span>{{ todo.title }} - {{ todo.description }}</span>
+                    <div>
                         {% if todo.done %}
                             <span class="badge badge-success">Done</span>
                         {% else %}
                             <span class="badge badge-warning">Pending</span>
                         {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="mb-4">
-            <h2>Notes</h2>
-            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
-                <input type="hidden" name="category" value="Notes">
-                <div class="form-group">
-                    <label for="title">Task Title:</label>
-                    <input type="text" id="title" name="title" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Task Description:</label>
-                    <input type="text" id="description" name="description" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="due_date">Due Date:</label>
-                    <input type="date" id="due_date" name="due_date" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Note</button>
-            </form>
-            <ul class="list-group">
-                {% for todo in todos if todo.category == 'Notes' %}
-                    <li class="list-group-item">
-                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
-                        {% if todo.done %}
-                            <span class="badge badge-success">Done</span>
-                        {% else %}
-                            <span class="badge badge-warning">Pending</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="mb-4">
-            <h2>Homeworks</h2>
-            <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
-                <input type="hidden" name="category" value="Homeworks">
-                <div class="form-group">
-                    <label for="title">Task Title:</label>
-                    <input type="text" id="title" name="title" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Task Description:</label>
-                    <input type="text" id="description" name="description" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="due_date">Due Date:</label>
-                    <input type="date" id="due_date" name="due_date" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Homework</button>
-            </form>
-            <ul class="list-group">
-                {% for todo in todos if todo.category == 'Homeworks' %}
-                    <li class="list-group-item">
-                        {{ todo.title }} - {{ todo.description }} - Due: {{ todo.due_date }}
-                        {% if todo.done %}
-                            <span class="badge badge-success">Done</span>
-                        {% else %}
-                            <span class="badge badge-warning">Pending</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+                        <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-secondary ml-2">Edit</a>
+                        <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger ml-2">Delete</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
         <a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
     </div>
 </body>
