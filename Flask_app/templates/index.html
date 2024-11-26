@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - G Status</title>
+    <title>Signup for G Status</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
-            background-color: #c4ecf1;
+            background-color: #e0f7fa;
             color: #004d40;
         }
         .container {
@@ -38,7 +38,7 @@
         <p><strong>G Status</strong> - The fastest and most efficient task manager.</p>
         <!-- Logo -->
         <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="mb-4" style="max-width: 150px;" />
-        <form method="POST" class="text-left">
+        <form method="POST" action="{{ url_for('signup') }}" class="text-left">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" class="form-control" required>
@@ -53,7 +53,7 @@
             <a href="{{ url_for('login') }}" class="btn btn-secondary">Already have an account? Login</a>
         </div>
         <div class="mt-3">
-            <a href="{{ url_for('index') }}" class="btn btn-danger">Reload Page</a>
+            <a href="{{ url_for('index') }}" class="btn btn-danger">Return to Main Page</a>
         </div>
     </div>
 </body>
