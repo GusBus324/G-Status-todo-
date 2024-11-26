@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from db_create import User, ToDo  # Changed from Flask_app.db_create to db_create
+from db_create import User, ToDo
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure, random key
@@ -64,6 +65,7 @@ def add_task():
         return redirect(url_for('login'))
     title = request.form['title']
     description = request.form['description']
+    
     new_task = ToDo(title=title, description=description, done=False, user_id=user_id)
     db_session.add(new_task)
     db_session.commit()
