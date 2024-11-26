@@ -3,142 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f7fa; /* Light blue background */
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            color: #333; /* Dark grey */
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555; /* Medium grey */
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .btn-primary {
-            background-color: #0277bd; /* Dark blue */
-            color: #ffffff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn-primary:hover {
-            background-color: #01579b; /* Darker blue */
-        }
-        .list-group {
-            list-style: none;
-            padding: 0;
-        }
-        .list-group-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .badge {
-            padding: 5px 10px;
-            border-radius: 12px;
-        }
-        .badge-success {
-            background-color: #388e3c; /* Dark green */
-            color: #ffffff;
-        }
-        .badge-warning {
-            background-color: #fbc02d; /* Dark yellow */
-            color: #ffffff;
-        }
-        .btn-danger {
-            background-color: #d32f2f; /* Dark red */
-            color: #ffffff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-danger:hover {
-            background-color: #b71c1c; /* Darker red */
-        }
-        .btn-secondary {
-            background-color: #6c757d; /* Grey */
-            color: #daf464;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268; /* Darker grey */
-        }
-        .mt-3 {
-            margin-top: 20px;
-        }
-    </style>
+    <title>G STATUS ToDo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Your To-Do List</h1>
-        <!-- Form to add new tasks -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="{{ logo_path }}" alt="Logo" class="logo">
+            </div>
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="G Status Logo" class="logo">
+            <h1>G STATUS TO-DO LIST</h1>
+        </div>
+        
         <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
             <div class="form-group">
                 <label for="title">Task Title:</label>
-                <input type="text" id="title" name="title" class="form-control" required>
+                <input type="text" id="title" name="title" required>
             </div>
             <div class="form-group">
                 <label for="description">Task Description:</label>
-                <input type="text" id="description" name="description" class="form-control">
+                <input type="text" id="description" name="description">
             </div>
             <button type="submit" class="btn btn-primary">Add Task</button>
         </form>
+
         <ul class="list-group">
             {% for todo in todos %}
                 <li class="list-group-item">
-                    <span>{{ todo.title }} - {{ todo.description }}</span>
-                    <div>
+                    <div class="task-content">
+                        <span class="task-title">{{ todo.title }}</span>
+                        <span class="task-description">{{ todo.description }}</span>
+                    </div>
+                    <div class="task-actions">
                         {% if todo.done %}
                             <span class="badge badge-success">Done</span>
                         {% else %}
                             <span class="badge badge-warning">Pending</span>
                         {% endif %}
-                        <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-secondary ml-2">Edit</a>
-                        <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger ml-2">Delete</a>
+                        <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-success">Edit</a>
+                        <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger">Delete</a>
                     </div>
                 </li>
             {% endfor %}
         </ul>
-        <a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-danger" style="margin-top: 30px;">Logout</a>
     </div>
 </body>
 </html>
