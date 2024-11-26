@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G STATUS ToDo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-color: #2C3E50;  /* Dark grey-blue background */
+            color: #9ae7fa;  /* Light text color */
+        }
+        .container {
+            background-color: #34495E;  /* Slightly lighter grey-blue */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .header {
+            background-color: #2980B9;  /* Blue header */
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .list-group-item {
+            background-color: #34495E;  /* Match container background */
+            border: 1px solid #2980B9;  /* Blue border */
+            margin-bottom: 5px;
+            color: #5a7f88;
+        }
+        .form-group label {
+            color: #ECF0F1;  /* Light text color for labels */
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .logo {
+            width: 150px;  /* Increased base size */
+            height: auto;
+            transition: transform 0.3s ease;  /* Smooth transition */
+        }
+        .logo:hover {
+            transform: scale(1.5);  /* Expand to 150% on hover */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -12,7 +51,6 @@
             <div class="logo-container">
                 <img src="{{ logo_path }}" alt="Logo" class="logo">
             </div>
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="G Status Logo" class="logo">
             <h1>G STATUS TO-DO LIST</h1>
         </div>
         

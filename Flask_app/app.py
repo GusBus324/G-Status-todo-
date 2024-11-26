@@ -29,7 +29,8 @@ def signup():
             db_session.rollback()
             flash('Username already exists. Please choose a different one.', 'danger')
 
-    return render_template('signup.html')
+    logo_path = url_for('static', filename='images/logo.png')
+    return render_template('signup.html', logo_path=logo_path)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -44,7 +45,8 @@ def login():
         else:
             flash('Invalid username or password', 'danger')
 
-    return render_template('login.html')
+    logo_path = url_for('static', filename='images/logo.png')
+    return render_template('login.html', logo_path=logo_path)
 
 @app.route('/dashboard')
 def dashboard():

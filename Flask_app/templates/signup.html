@@ -26,6 +26,9 @@
 </head>
 <body>
     <div class="container">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="G Status Logo" class="img-fluid" style="max-width: 200px;">
+        </div>
         <h2>Signup</h2>
         <form method="POST" action="{{ url_for('signup') }}">
             <div class="form-group">

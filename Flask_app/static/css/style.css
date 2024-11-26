@@ -18,6 +18,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    color: #ebffbc;
 }
 
 .container {
@@ -88,7 +89,7 @@ h1 {
 .form-group input {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid #83a5f9;
     border-radius: 4px;
     margin-bottom: 1rem;
     transition: border-color 0.3s ease;
@@ -236,4 +237,20 @@ h1 {
 .todo-item.done {
     border-left-color: var(--dark);
     opacity: 0.7;
+}
+
+/* Glow effect for all text elements */
+p, h1, h2, h3, h4, h5, h6, label, span, a {
+    transition: text-shadow 0.3s ease;
+}
+
+p:hover, h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover, label:hover, span:hover, a:hover {
+    text-shadow: 0 0 10px rgb(222, 255, 103);
+    cursor: default;
+}
+
+/* Special glow for links */
+a:hover {
+    text-shadow: 0 0 10px rgba(0,123,255,0.3);
+    cursor: pointer;
 }
