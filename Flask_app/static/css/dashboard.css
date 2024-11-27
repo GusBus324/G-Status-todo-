@@ -1,0 +1,80 @@
+.calendar-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px 0;
+    animation: slideIn 0.5s ease-out;
+}
+
+.clock-container {
+    font-size: 2em;
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border-radius: 10px;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th, .calendar td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.calendar th {
+    background: #f8f9fa;
+    color: #666;
+}
+
+.current-day {
+    background: #e3f2fd;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.task-due-date {
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.calendar-task {
+    font-size: 0.8em;
+    color: #ff5722; /* Customize as needed */
+    margin: 2px 0;
+    list-style: none;
+}
+
+.has-task {
+    background-color: #fff3e0; /* Highlight days with tasks */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(174, 119, 227, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(174, 119, 227, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(174, 119, 227, 0);
+    }
+}

@@ -55,8 +55,21 @@ def dashboard():
     if not user_id:
         return redirect(url_for('login'))
     todos = db_session.query(ToDo).filter_by(user_id=user_id).all()
+    # Prepare tasks data for the calendar
+    tasks_for_calendar = []
+    for todo in todos:
+        if todo.due_date:
+            tasks_for_calendar.append({
+                'title': todo.title,
+                'due_date': todo.due_date.strftime('%Y-%m-%d')
+            })
     logo_path = url_for('static', filename='images/logo.png')
-    return render_template('dashboard.html', todos=todos, logo_path=logo_path)
+    current_date = datetime.now()
+    return render_template('dashboard.html', 
+                           todos=todos, 
+                           logo_path=logo_path,
+                           current_date=current_date,
+                           tasks_for_calendar=tasks_for_calendar)
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
@@ -65,8 +78,16 @@ def add_task():
         return redirect(url_for('login'))
     title = request.form['title']
     description = request.form['description']
+    due_date_str = request.form['due_date']
+    due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date() if due_date_str else None
     
-    new_task = ToDo(title=title, description=description, done=False, user_id=user_id)
+    new_task = ToDo(
+        title=title,
+        description=description,
+        due_date=due_date,
+        done=False,
+        user_id=user_id
+    )
     db_session.add(new_task)
     db_session.commit()
     return redirect(url_for('dashboard'))
@@ -80,6 +101,8 @@ def edit_task(task_id):
     if request.method == 'POST':
         task.title = request.form['title']
         task.description = request.form['description']
+        due_date_str = request.form['due_date']
+        task.due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date() if due_date_str else None
         task.done = request.form.get('done') == 'on'
         db_session.commit()
         return redirect(url_for('dashboard'))

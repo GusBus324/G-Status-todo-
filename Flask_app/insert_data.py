@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from werkzeug.security import generate_password_hash
-from Flask_app.db_create import User, ToDo  # Ensure you import the correct models
+from db_create import User, ToDo  # Ensure you import the correct models
 
 engine = create_engine('sqlite:///todo.db')
 Session = sessionmaker(bind=engine)

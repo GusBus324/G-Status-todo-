@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G STATUS ToDo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <style>
         body {
             background-color: #2C3E50;  /* Dark grey-blue background */
@@ -54,6 +55,31 @@
             <h1>G STATUS TO-DO LIST</h1>
         </div>
         
+        <div class="clock-container">
+            <div id="clock"></div>
+        </div>
+
+        <div class="calendar-container">
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th colspan="7">{{ current_date.strftime('%B %Y') }}</th>
+                    </tr>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body">
+                </tbody>
+            </table>
+        </div>
+
         <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
             <div class="form-group">
                 <label for="title">Task Title:</label>
@@ -62,6 +88,10 @@
             <div class="form-group">
                 <label for="description">Task Description:</label>
                 <input type="text" id="description" name="description">
+            </div>
+            <div class="form-group">
+                <label for="due_date">Due Date:</label>
+                <input type="date" id="due_date" name="due_date">
             </div>
             <button type="submit" class="btn btn-primary">Add Task</button>
         </form>
@@ -72,6 +102,11 @@
                     <div class="task-content">
                         <span class="task-title">{{ todo.title }}</span>
                         <span class="task-description">{{ todo.description }}</span>
+                        {% if todo.due_date %}
+                            <span class="task-due-date">
+                                Due: {{ todo.due_date.strftime('%Y-%m-%d') }}
+                            </span>
+                        {% endif %}
                     </div>
                     <div class="task-actions">
                         {% if todo.done %}
@@ -88,5 +123,78 @@
 
         <a href="{{ url_for('logout') }}" class="btn btn-danger" style="margin-top: 30px;">Logout</a>
     </div>
+
+    <script>
+        // Pass tasks data from Flask to JavaScript
+        const tasks = {{ tasks_for_calendar | tojson }};
+        
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    
+        // Generate calendar
+        function generateCalendar() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            const startingDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            
+            let day = 1;
+            const calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = ''; // Clear previous content
+            
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+                    if (i === 0 && j < startingDay) {
+                        cell.textContent = '';
+                    } else if (day > totalDays) {
+                        cell.textContent = '';
+                    } else {
+                        cell.textContent = day;
+                        
+                        // Check for tasks due on this date
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const tasksDue = tasks.filter(task => task.due_date === dateStr);
+                        
+                        if (tasksDue.length > 0) {
+                            const taskList = document.createElement('ul');
+                            tasksDue.forEach(task => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent = task.title;
+                                listItem.classList.add('calendar-task');
+                                taskList.appendChild(listItem);
+                            });
+                            cell.appendChild(taskList);
+                            cell.classList.add('has-task');
+                        }
+                        
+                        if (day === date.getDate() && month === date.getMonth() && year === date.getFullYear()) {
+                            cell.classList.add('current-day');
+                        }
+                        day++;
+                    }
+                    row.appendChild(cell);
+                }
+                calendarBody.appendChild(row);
+                if (day > totalDays) {
+                    break;
+                }
+            }
+        }
+        generateCalendar();
+    </script>
 </body>
 </html>
