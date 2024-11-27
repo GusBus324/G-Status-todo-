@@ -153,7 +153,21 @@ def delete_task(task_id):
 @app.route('/')
 def index():
     logo_path = url_for('static', filename='images/logo.png')
-    return render_template('index.html', logo_path=logo_path)
+    features = [
+        {
+            'title': 'Smart Task Management',
+            'description': 'Intuitive interface that helps you organize tasks efficiently with due dates and priorities.'
+        },
+        {
+            'title': 'Calendar Integration',
+            'description': 'Seamless calendar view to visualize your schedule and manage time effectively.'
+        },
+        {
+            'title': 'Secure & Private',
+            'description': 'Your data is protected with state-of-the-art encryption and security measures.'
+        }
+    ]
+    return render_template('index.html', logo_path=logo_path, features=features)
 
 @app.route('/logout')
 def logout():

@@ -363,3 +363,23 @@ a:hover {
 .fc-daygrid-event-harness {
     margin-bottom: 5px !important;
 }
+
+.center-button {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #51A846;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #428939;
+}
