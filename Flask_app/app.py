@@ -54,8 +54,13 @@ def dashboard():
     user_id = session.get('user_id')
     if not user_id:
         return redirect(url_for('login'))
-    todos = db_session.query(ToDo).filter_by(user_id=user_id).all()
-    # Prepare tasks data for the calendar
+    
+    # Query todos and order by due_date and due_time
+    todos = db_session.query(ToDo)\
+        .filter_by(user_id=user_id)\
+        .order_by(ToDo.due_date.asc(), ToDo.due_time.asc())\
+        .all()
+    
     tasks_for_calendar = []
     for todo in todos:
         if todo.due_date:
