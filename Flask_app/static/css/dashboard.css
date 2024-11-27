@@ -14,7 +14,7 @@
     padding: 20px;
     background: linear-gradient(135deg, #6e8efb, #a777e3);
     border-radius: 10px;
-    color: white;
+    color: rgb(243, 149, 149);
     animation: pulse 2s infinite;
 }
 

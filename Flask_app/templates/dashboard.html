@@ -1,369 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G STATUS ToDo</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background-color: #2C3E50;  /* Dark grey-blue background */
-            color: #9ae7fa;  /* Light text color */
+            background-color: #cf67ff;  /* Pastel purple */
         }
-        .container {
-            background-color: #34495E;  /* Slightly lighter grey-blue */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        .logo-hover {
+            transition: transform 0.3s ease;
         }
-        .header {
-            background-color: #2980B9;  /* Blue header */
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .list-group-item {
-            background-color: #34495E;
-            border: 1px solid #2980B9;
-            margin-bottom: 10px;
-            color: #5a7f88;
-            padding: 15px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .list-group-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        }
-
-        .task-content {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .task-title {
-            font-size: 1.2em;
-            color: #9ae7fa;
-            font-weight: bold;
-        }
-
-        .task-description {
-            color: #7f9eb2;
-            font-size: 0.95em;
-            padding: 10px;
-            border-left: 3px solid #2980B9;
-            margin-left: 10px;
-            background-color: rgba(41, 128, 185, 0.1);
-            border-radius: 0 8px 8px 0;
-        }
-
-        .task-due-date {
-            color: #6bb9e7;
-            font-size: 0.9em;
-            font-style: italic;
-        }
-
-        .task-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .badge {
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 0.85em;
-        }
-
-        .badge-success {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .badge-warning {
-            background-color: #f39c12;
-            color: white;
-        }
-
-        .form-group label {
-            color: #ECF0F1;  /* Light text color for labels */
-        }
-        .logo-container {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .logo {
-            width: 150px;  /* Increased base size */
-            height: auto;
-            transition: transform 0.3s ease;  /* Smooth transition */
-        }
-        .logo:hover {
-            transform: scale(1.5);  /* Expand to 150% on hover */
-        }
-
-        /* Calendar Animations */
-        .calendar {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .calendar td {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .calendar td:hover {
-            transform: scale(1.1);
-            background-color: #f0ed36;
-            z-index: 1;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-        }
-
-        .calendar .current-day {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { background-color: #b4e0fe; }
-            50% { background-color: #61b7f0; }
-            100% { background-color: #1a88d2; }
-        }
-
-        .calendar-task {
-            animation: fadeIn 0.5s ease-in;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-task:hover {
-            transform: translateX(5px);
-            color: #41d0f4;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .has-task {
-            position: relative;
-        }
-
-        .has-task::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: #9ae7fa;
-            animation: taskIndicator 1s ease-in-out infinite;
-        }
-
-        @keyframes taskIndicator {
-            0% { transform: scaleX(0.3); }
-            50% { transform: scaleX(1); }
-            100% { transform: scaleX(0.3); }
+        .logo-hover:hover {
+            transform: scale(1.2);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-container">
-                <img src="{{ logo_path }}" alt="Logo" class="logo">
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ logo_path }}" alt="Logo" class="logo-hover">
             </div>
-            <h1>G STATUS TO-DO LIST</h1>
-        </div>
-        
-        <div class="clock-container">
-            <div id="clock"></div>
-        </div>
 
-        <div class="calendar-container">
-            <table class="calendar">
-                <thead>
-                    <tr>
-                        <th colspan="7">{{ current_date.strftime('%B %Y') }}</th>
-                    </tr>
-                    <tr>
-                        <th>Sun</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                        <th>Sat</th>
-                    </tr>
-                </thead>
-                <tbody id="calendar-body">
-                </tbody>
-            </table>
-        </div>
+            <div class="sidebar-content">
+                <h4 class="text-white p-3">Add New Task</h4>
+                <form action="{{ url_for('add_task') }}" method="post" class="p-3">
+                    <div class="form-group">
+                        <input type="text" name="title" class="form-control" placeholder="Task Title" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" name="due_date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="time" name="due_time" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Task</button>
+                </form>
+                
+                <div class="sidebar-footer">
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">Logout</a>
+                </div>
+            </div>
+        </nav>
 
-        <div class="container mt-4">
-            <button class="btn btn-primary mb-3" type="button" onclick="toggleAddTask()">
-                <i class="fas fa-plus"></i> Add Task
-            </button>
-            
-            <div id="addTaskForm" style="display: none;">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form action="{{ url_for('add_task') }}" method="post">
-                            <div class="form-group">
-                                <label for="title">Title:</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
+        <!-- Page Content -->
+        <div id="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="row mb-4">
+                        <div class="col text-center">
+                            <div class="current-time">
+                                Current Time: <span id="clock">{{ current_time }}</span>
                             </div>
-                            <div class="form-group">
-                                <label for="description">Description:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <!-- ...existing code... -->
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h3>Your Tasks</h3>
+                        {% for todo in todos %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ todo.title }}</h5>
+                                <p class="card-text">{{ todo.description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Due: {{ todo.due_date.strftime('%Y-%m-%d') if todo.due_date }}
+                                        {% if todo.due_time %}
+                                        at {{ todo.due_time.strftime('%H:%M') }}
+                                        {% endif %}
+                                    </small>
+                                </p>
+                                <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger btn-sm">Delete</a>
                             </div>
-                            <div class="form-group">
-                                <label for="due_date">Due Date:</label>
-                                <input type="date" class="form-control" id="due_date" name="due_date">
-                            </div>
-                            <div class="form-group">
-                                <label for="due_time">Due Time:</label>
-                                <input type="time" class="form-control" id="due_time" name="due_time">
-                            </div>
-                            <button type="submit" class="btn btn-success mt-3">Save Task</button>
-                        </form>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-
-        <ul class="list-group">
-            {% for todo in todos %}
-                <li class="list-group-item">
-                    <div class="task-content">
-                        <span class="task-title">{{ todo.title }}</span>
-                        <span class="task-description">{{ todo.description }}</span>
-                        {% if todo.due_date %}
-                            <span class="task-due-date">
-                                Due: {{ todo.due_date.strftime('%Y-%m-%d') }}
-                                {% if todo.due_time %}
-                                    at {{ todo.due_time.strftime('%H:%M') }}
-                                {% endif %}
-                            </span>
-                        {% endif %}
-                    </div>
-                    <div class="task-actions">
-                        {% if todo.done %}
-                            <span class="badge badge-success">Done</span>
-                        {% else %}
-                            <span class="badge badge-warning">Pending</span>
-                        {% endif %}
-                        <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-success">Edit</a>
-                        <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger">Delete</a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-
-        <a href="{{ url_for('logout') }}" class="btn btn-danger" style="margin-top: 30px;">Logout</a>
     </div>
 
+    <!-- Your existing JavaScript imports and calendar initialization -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
     <script>
-        // Pass tasks data from Flask to JavaScript
-        const tasks = {{ tasks_for_calendar | tojson }};
-        
-        // Update clock
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: {{ tasks_for_calendar | tojson | safe }},
+                eventDidMount: function(info) {
+                    if (info.event.extendedProps.description) {
+                        $(info.el).tooltip({
+                            title: info.event.extendedProps.description,
+                            placement: 'top',
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                height: 'auto'
+            });
+            calendar.render();
+        });
+
         function updateClock() {
+            const clock = document.getElementById('clock');
             const now = new Date();
-            const timeStr = now.toLocaleTimeString();
-            document.getElementById('clock').textContent = timeStr;
+            clock.textContent = now.toLocaleTimeString();
         }
+
         setInterval(updateClock, 1000);
         updateClock();
-    
-        // Generate calendar
-        function generateCalendar() {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            const startingDay = firstDay.getDay();
-            const totalDays = lastDay.getDate();
-            
-            let day = 1;
-            const calendarBody = document.getElementById('calendar-body');
-            calendarBody.innerHTML = ''; // Clear previous content
-            
-            for (let i = 0; i < 6; i++) {
-                const row = document.createElement('tr');
-                
-                for (let j = 0; j < 7; j++) {
-                    const cell = document.createElement('td');
-                    if (i === 0 && j < startingDay) {
-                        cell.textContent = '';
-                    } else if (day > totalDays) {
-                        cell.textContent = '';
-                    } else {
-                        cell.textContent = day;
-                        
-                        // Check for tasks due on this date
-                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                        const tasksDue = tasks.filter(task => task.due_date === dateStr);
-                        
-                        if (tasksDue.length > 0) {
-                            const taskList = document.createElement('ul');
-                            tasksDue.forEach(task => {
-                                const listItem = document.createElement('li');
-                                listItem.textContent = task.title + (task.due_time ? ` (${task.due_time})` : '');
-                                listItem.classList.add('calendar-task');
-                                taskList.appendChild(listItem);
-                            });
-                            cell.appendChild(taskList);
-                            cell.classList.add('has-task');
-                        }
-                        
-                        if (day === date.getDate() && month === date.getMonth() && year === date.getFullYear()) {
-                            cell.classList.add('current-day');
-                        }
-                        day++;
-                    }
-                    row.appendChild(cell);
-                }
-                calendarBody.appendChild(row);
-                if (day > totalDays) {
-                    break;
-                }
-            }
-        }
-        generateCalendar();
-
-        function toggleAddTask() {
-            const form = document.getElementById('addTaskForm');
-            if (form.style.display === 'none') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html>

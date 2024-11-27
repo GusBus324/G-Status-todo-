@@ -55,7 +55,10 @@ def dashboard():
     if not user_id:
         return redirect(url_for('login'))
     
-    # Query todos and order by due_date and due_time
+    # Add current timestamp
+    current_datetime = datetime.now()
+    current_time = current_datetime.strftime('%I:%M:%S %p')  # Changed from '%H:%M:%S' to '%I:%M:%S %p'
+    
     todos = db_session.query(ToDo)\
         .filter_by(user_id=user_id)\
         .order_by(ToDo.due_date.asc(), ToDo.due_time.asc())\
@@ -65,17 +68,31 @@ def dashboard():
     for todo in todos:
         if todo.due_date:
             time_str = todo.due_time.strftime('%H:%M') if todo.due_time else ''
+            
+            # Include time in the display text
+            display_text = f"{todo.title} - Due: {time_str}" if time_str else todo.title
+            if todo.description:
+                display_text = f"{display_text}\n{todo.description}"
+            
             tasks_for_calendar.append({
-                'title': todo.title,
-                'due_date': todo.due_date.strftime('%Y-%m-%d'),
-                'due_time': time_str
+                'title': display_text,
+                'start': f"{todo.due_date.strftime('%Y-%m-%d')}T{time_str}" if time_str else todo.due_date.strftime('%Y-%m-%d'),
+                'description': todo.description,
+                'done': todo.done,
+                'color': '#51A846' if todo.done else '#FF6B6B',
+                'display': 'block',  # Ensures the event takes up full width
+                'className': 'calendar-event',  # Add a custom class for styling
+                'allDay': True,  # Added to ensure full-width display
+                'overflow': 'auto'  # Added to handle text overflow
             })
+    
     logo_path = url_for('static', filename='images/logo.png')
     current_date = datetime.now()
     return render_template('dashboard.html', 
                            todos=todos, 
                            logo_path=logo_path,
                            current_date=current_date,
+                           current_time=current_time,
                            tasks_for_calendar=tasks_for_calendar)
 
 @app.route('/add_task', methods=['POST'])

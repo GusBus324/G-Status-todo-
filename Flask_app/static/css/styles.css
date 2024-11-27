@@ -1,0 +1,21 @@
+
+.dashboard-logo {
+    width: 300px;  /* Increased logo size */
+    height: auto;
+    margin: 20px 0;
+}
+
+.calendar-event {
+    white-space: normal !important;  /* Allows text wrapping */
+    height: auto !important;
+    min-height: 40px !important;
+    font-size: 14px !important;
+    padding: 5px !important;
+    overflow: visible !important;
+}
+
+.fc-event-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
