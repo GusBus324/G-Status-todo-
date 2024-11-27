@@ -165,6 +165,10 @@ def index():
         {
             'title': 'Secure & Private',
             'description': 'Your data is protected with state-of-the-art encryption and security measures.'
+        },
+        {
+            'title': 'Task Prioritization',
+            'description': 'Stay focused on what matters most with our priority-based task organization system.'
         }
     ]
     return render_template('index.html', logo_path=logo_path, features=features)
