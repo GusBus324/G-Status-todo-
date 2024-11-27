@@ -24,11 +24,71 @@
             margin-bottom: 20px;
         }
         .list-group-item {
-            background-color: #34495E;  /* Match container background */
-            border: 1px solid #2980B9;  /* Blue border */
-            margin-bottom: 5px;
+            background-color: #34495E;
+            border: 1px solid #2980B9;
+            margin-bottom: 10px;
             color: #5a7f88;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-title {
+            font-size: 1.2em;
+            color: #9ae7fa;
+            font-weight: bold;
+        }
+
+        .task-description {
+            color: #7f9eb2;
+            font-size: 0.95em;
+            padding: 10px;
+            border-left: 3px solid #2980B9;
+            margin-left: 10px;
+            background-color: rgba(41, 128, 185, 0.1);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .task-due-date {
+            color: #6bb9e7;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .task-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+
+        .badge-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+
         .form-group label {
             color: #ECF0F1;  /* Light text color for labels */
         }
@@ -43,6 +103,87 @@
         }
         .logo:hover {
             transform: scale(1.5);  /* Expand to 150% on hover */
+        }
+
+        /* Calendar Animations */
+        .calendar {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .calendar td {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calendar td:hover {
+            transform: scale(1.1);
+            background-color: #f0ed36;
+            z-index: 1;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        .calendar .current-day {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: #b4e0fe; }
+            50% { background-color: #61b7f0; }
+            100% { background-color: #1a88d2; }
+        }
+
+        .calendar-task {
+            animation: fadeIn 0.5s ease-in;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-task:hover {
+            transform: translateX(5px);
+            color: #41d0f4;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .has-task {
+            position: relative;
+        }
+
+        .has-task::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #9ae7fa;
+            animation: taskIndicator 1s ease-in-out infinite;
+        }
+
+        @keyframes taskIndicator {
+            0% { transform: scaleX(0.3); }
+            50% { transform: scaleX(1); }
+            100% { transform: scaleX(0.3); }
         }
     </style>
 </head>
@@ -80,21 +221,37 @@
             </table>
         </div>
 
-        <form method="POST" action="{{ url_for('add_task') }}" class="mb-4">
-            <div class="form-group">
-                <label for="title">Task Title:</label>
-                <input type="text" id="title" name="title" required>
+        <div class="container mt-4">
+            <button class="btn btn-primary mb-3" type="button" onclick="toggleAddTask()">
+                <i class="fas fa-plus"></i> Add Task
+            </button>
+            
+            <div id="addTaskForm" style="display: none;">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form action="{{ url_for('add_task') }}" method="post">
+                            <div class="form-group">
+                                <label for="title">Title:</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description:</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="due_date">Due Date:</label>
+                                <input type="date" class="form-control" id="due_date" name="due_date">
+                            </div>
+                            <div class="form-group">
+                                <label for="due_time">Due Time:</label>
+                                <input type="time" class="form-control" id="due_time" name="due_time">
+                            </div>
+                            <button type="submit" class="btn btn-success mt-3">Save Task</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="description">Task Description:</label>
-                <input type="text" id="description" name="description">
-            </div>
-            <div class="form-group">
-                <label for="due_date">Due Date:</label>
-                <input type="date" id="due_date" name="due_date">
-            </div>
-            <button type="submit" class="btn btn-primary">Add Task</button>
-        </form>
+        </div>
 
         <ul class="list-group">
             {% for todo in todos %}
@@ -105,6 +262,9 @@
                         {% if todo.due_date %}
                             <span class="task-due-date">
                                 Due: {{ todo.due_date.strftime('%Y-%m-%d') }}
+                                {% if todo.due_time %}
+                                    at {{ todo.due_time.strftime('%H:%M') }}
+                                {% endif %}
                             </span>
                         {% endif %}
                     </div>
@@ -173,7 +333,7 @@
                             const taskList = document.createElement('ul');
                             tasksDue.forEach(task => {
                                 const listItem = document.createElement('li');
-                                listItem.textContent = task.title;
+                                listItem.textContent = task.title + (task.due_time ? ` (${task.due_time})` : '');
                                 listItem.classList.add('calendar-task');
                                 taskList.appendChild(listItem);
                             });
@@ -195,6 +355,15 @@
             }
         }
         generateCalendar();
+
+        function toggleAddTask() {
+            const form = document.getElementById('addTaskForm');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

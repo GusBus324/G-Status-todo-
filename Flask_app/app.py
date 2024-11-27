@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from db_create import User, ToDo
-from datetime import datetime
+from datetime import datetime, time
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure, random key
@@ -59,9 +59,11 @@ def dashboard():
     tasks_for_calendar = []
     for todo in todos:
         if todo.due_date:
+            time_str = todo.due_time.strftime('%H:%M') if todo.due_time else ''
             tasks_for_calendar.append({
                 'title': todo.title,
-                'due_date': todo.due_date.strftime('%Y-%m-%d')
+                'due_date': todo.due_date.strftime('%Y-%m-%d'),
+                'due_time': time_str
             })
     logo_path = url_for('static', filename='images/logo.png')
     current_date = datetime.now()
@@ -79,12 +81,16 @@ def add_task():
     title = request.form['title']
     description = request.form['description']
     due_date_str = request.form['due_date']
+    due_time_str = request.form['due_time']
+    
     due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date() if due_date_str else None
+    due_time = datetime.strptime(due_time_str, '%H:%M').time() if due_time_str else None
     
     new_task = ToDo(
         title=title,
         description=description,
         due_date=due_date,
+        due_time=due_time,
         done=False,
         user_id=user_id
     )
@@ -102,7 +108,11 @@ def edit_task(task_id):
         task.title = request.form['title']
         task.description = request.form['description']
         due_date_str = request.form['due_date']
+        due_time_str = request.form['due_time']
+        
         task.due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date() if due_date_str else None
+        task.due_time = datetime.strptime(due_time_str, '%H:%M').time() if due_time_str else None
+        
         task.done = request.form.get('done') == 'on'
         db_session.commit()
         return redirect(url_for('dashboard'))
@@ -120,7 +130,8 @@ def delete_task(task_id):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    logo_path = url_for('static', filename='images/logo.png')
+    return render_template('index.html', logo_path=logo_path)
 
 @app.route('/logout')
 def logout():

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, create_engine, Date
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, create_engine, Date, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -17,8 +17,9 @@ class ToDo(Base):
     title = Column(String, nullable=False)
     description = Column(String)
     done = Column(Boolean, default=False)
-    category = Column(String)  # Add this line
-    due_date = Column(Date)  # Add this line
+    category = Column(String)
+    due_date = Column(Date)
+    due_time = Column(Time)  # Add this line
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', back_populates='todos')
 
