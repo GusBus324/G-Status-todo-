@@ -450,3 +450,18 @@ a:hover {
         clip-path: inset(0 0 0 0);
     }
 }
+
+.logo-zoom {
+    animation: zoomInLogo 0.5s ease-out;
+}
+
+@keyframes zoomInLogo {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
