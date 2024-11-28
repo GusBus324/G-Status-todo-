@@ -55,21 +55,59 @@ def dashboard():
     if not user_id:
         return redirect(url_for('login'))
     
-    # Add current timestamp
     current_datetime = datetime.now()
-    current_time = current_datetime.strftime('%I:%M:%S %p')  # Changed from '%H:%M:%S' to '%I:%M:%S %p'
+    current_time = current_datetime.strftime('%I:%M:%S %p')
     
+    # Get all todos and categorize them
     todos = db_session.query(ToDo)\
         .filter_by(user_id=user_id)\
         .order_by(ToDo.due_date.asc(), ToDo.due_time.asc())\
         .all()
+    
+    # Categorize tasks
+    overdue_tasks = []
+    due_today = []
+    upcoming_tasks = []
+    completed_tasks = []
+    
+    for todo in todos:
+        if todo.done:
+            completed_tasks.append(todo)
+        elif todo.due_date:
+            if todo.due_date < current_datetime.date():
+                overdue_tasks.append(todo)
+            elif todo.due_date == current_datetime.date():
+                due_today.append(todo)
+            else:
+                upcoming_tasks.append(todo)
+        else:
+            upcoming_tasks.append(todo)
+    
+    # Calculate statistics
+    stats = {
+        'total': len(todos),
+        'completed': len(completed_tasks),
+        'overdue': len(overdue_tasks),
+        'due_today': len(due_today),
+        'upcoming': len(upcoming_tasks),
+        'completion_rate': round((len(completed_tasks) / len(todos) * 100) if todos else 0, 1)
+    }
     
     tasks_for_calendar = []
     for todo in todos:
         if todo.due_date:
             time_str = todo.due_time.strftime('%H:%M') if todo.due_time else ''
             
-            # Include time in the display text
+            # Enhanced status-based coloring
+            if todo.done:
+                color = '#28a745'  # Green for completed
+            elif todo.due_date < current_datetime.date():
+                color = '#dc3545'  # Red for overdue
+            elif todo.due_date == current_datetime.date():
+                color = '#ffc107'  # Yellow for due today
+            else:
+                color = '#007bff'  # Blue for upcoming
+            
             display_text = f"{todo.title} - Due: {time_str}" if time_str else todo.title
             if todo.description:
                 display_text = f"{display_text}\n{todo.description}"
@@ -79,21 +117,25 @@ def dashboard():
                 'start': f"{todo.due_date.strftime('%Y-%m-%d')}T{time_str}" if time_str else todo.due_date.strftime('%Y-%m-%d'),
                 'description': todo.description,
                 'done': todo.done,
-                'color': '#51A846' if todo.done else '#FF6B6B',
-                'display': 'block',  # Ensures the event takes up full width
-                'className': 'calendar-event',  # Add a custom class for styling
-                'allDay': True,  # Added to ensure full-width display
-                'overflow': 'auto'  # Added to handle text overflow
+                'color': color,
+                'display': 'block',
+                'className': f"calendar-event {'task-completed' if todo.done else ''}",
+                'allDay': True,
+                'overflow': 'auto'
             })
     
     logo_path = url_for('static', filename='images/logo.png')
-    current_date = datetime.now()
     return render_template('dashboard.html', 
-                           todos=todos, 
-                           logo_path=logo_path,
-                           current_date=current_date,
-                           current_time=current_time,
-                           tasks_for_calendar=tasks_for_calendar)
+                         todos=todos,
+                         overdue_tasks=overdue_tasks,
+                         due_today=due_today,
+                         upcoming_tasks=upcoming_tasks,
+                         completed_tasks=completed_tasks,
+                         stats=stats,
+                         logo_path=logo_path,
+                         current_date=current_datetime,
+                         current_time=current_time,
+                         tasks_for_calendar=tasks_for_calendar)
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
