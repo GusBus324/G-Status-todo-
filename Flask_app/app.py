@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from db_create import User, ToDo
 from datetime import datetime, time
+import re
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure, random key
@@ -18,6 +19,28 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Password validation
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.', 'danger')
+            return redirect(url_for('signup'))
+        
+        if not re.search(r'[A-Z]', password):
+            flash('Password must contain at least one uppercase letter.', 'danger')
+            return redirect(url_for('signup'))
+            
+        if not re.search(r'[a-z]', password):
+            flash('Password must contain at least one lowercase letter.', 'danger')
+            return redirect(url_for('signup'))
+            
+        if not re.search(r'[0-9]', password):
+            flash('Password must contain at least one number.', 'danger')
+            return redirect(url_for('signup'))
+            
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            flash('Password must contain at least one special character.', 'danger')
+            return redirect(url_for('signup'))
+
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         new_user = User(username=username, password=hashed_password)
