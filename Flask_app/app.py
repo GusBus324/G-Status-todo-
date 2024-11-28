@@ -195,25 +195,37 @@ def delete_task(task_id):
 @app.route('/')
 def index():
     logo_path = url_for('static', filename='images/logo.png')
+    brand_info = {
+        'name': 'G STATUS',
+        'tagline': 'FASTEST AND MOST EFFICIENT TASK MANAGER'
+    }
     features = [
         {
-            'title': 'Smart Task Management',
-            'description': 'Intuitive interface that helps you organize tasks efficiently with due dates and priorities.'
+            'title': 'Smart Organization',
+            'description': 'Organize your tasks efficiently with our intuitive interface.',
+            'icon': 'fa-calendar-alt'
         },
         {
-            'title': 'Calendar Integration',
-            'description': 'Seamless calendar view to visualize your schedule and manage time effectively.'
+            'title': 'Real-Time Updates',
+            'description': 'Stay on top of your tasks with instant updates and notifications.',
+            'icon': 'fa-bolt'
         },
         {
-            'title': 'Secure & Private',
-            'description': 'Your data is protected with state-of-the-art encryption and security measures.'
+            'title': 'Reliable Security',
+            'description': 'Your data is protected with advanced security measures.',
+            'icon': 'fa-shield-alt'
         },
         {
-            'title': 'Task Prioritization',
-            'description': 'Stay focused on what matters most with our priority-based task organization system.'
+            'title': 'Progress Tracking',
+            'description': 'Monitor your productivity with comprehensive tracking tools.',
+            'icon': 'fa-chart-line'
         }
     ]
-    return render_template('index.html', logo_path=logo_path, features=features)
+    
+    return render_template('index.html', 
+                         logo_path=logo_path, 
+                         features=features, 
+                         brand_info=brand_info)
 
 @app.route('/logout')
 def logout():
@@ -223,3 +235,6 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# All rights reserved. This software is the confidential and proprietary information
+# of G STATUS. © 2024 G STATUS. All rights reserved.
