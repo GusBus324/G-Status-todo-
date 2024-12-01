@@ -14,7 +14,7 @@
     padding: 20px;
     background: linear-gradient(135deg, #6e8efb, #a777e3);
     border-radius: 10px;
-    color: rgb(243, 149, 149);
+    color: rgb(246, 104, 104);
     animation: pulse 2s infinite;
 }
 
@@ -26,16 +26,16 @@
 .calendar th, .calendar td {
     padding: 10px;
     text-align: center;
-    border: 1px solid #eee;
+    border: 1px solid #b0babc;
 }
 
 .calendar th {
-    background: #f8f9fa;
+    background: #bebebf;
     color: #666;
 }
 
 .current-day {
-    background: #e3f2fd;
+    background: #bdceda;
     font-weight: bold;
     color: #1976d2;
 }
@@ -53,7 +53,7 @@
 }
 
 .has-task {
-    background-color: #fff3e0; /* Highlight days with tasks */
+    background-color: #fedeab; /* Highlight days with tasks */
 }
 
 @keyframes slideIn {
