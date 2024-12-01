@@ -15,6 +15,19 @@
         .logo-hover:hover {
             transform: scale(1.2);
         }
+        /* Add styles for task urgency */
+        .task-normal {
+            background-color: #28a745 !important;
+            border-color: #28a745 !important;
+        }
+        .task-warning {
+            background-color: #ffc107 !important;
+            border-color: #ffc107 !important;
+        }
+        .task-urgent {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +121,27 @@
                 initialView: 'dayGridMonth',
                 events: {{ tasks_for_calendar | tojson | safe }},
                 eventDidMount: function(info) {
+                    // Add color-coding logic
+                    const now = new Date();
+                    const dueDate = new Date(info.event.start);
+                    const diffTime = dueDate - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffTime < 0) {
+                        // Overdue tasks
+                        info.el.classList.add('task-urgent');
+                    } else if (diffDays <= 1) {
+                        // Due within 24 hours
+                        info.el.classList.add('task-urgent');
+                    } else if (diffDays <= 7) {
+                        // Due within 7 days
+                        info.el.classList.add('task-warning');
+                    } else {
+                        // Due in more than 7 days
+                        info.el.classList.add('task-normal');
+                    }
+
+                    // Existing tooltip logic
                     if (info.event.extendedProps.description) {
                         $(info.el).tooltip({
                             title: info.event.extendedProps.description,
