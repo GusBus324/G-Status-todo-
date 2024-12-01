@@ -223,9 +223,9 @@ def delete_task(task_id):
 
 @app.route('/')
 def index():
-    logo_path = url_for('static', filename='images/logo.png')
+    logo_path = url_for('static', filename='images/Logo2.png')
     brand_info = {
-        'name': 'G STATUS',
+        'name': 'Task Management',
         'tagline': 'FASTEST AND MOST EFFICIENT TASK MANAGER'
     }
     features = [
