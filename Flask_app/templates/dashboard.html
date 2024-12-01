@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background-color: #e7a2fa;  /* Pastel purple background */
+            background: linear-gradient(135deg, #1a2a3d 0%, #2c3e50 100%);
+            color: #e0e0e0;
         }
         .logo-hover {
             transition: transform 0.3s ease;
@@ -15,18 +16,83 @@
         .logo-hover:hover {
             transform: scale(1.2);
         }
-        /* Add styles for task urgency */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .card-body {
+            background: linear-gradient(45deg, rgba(41, 51, 92, 0.8), rgba(26, 33, 64, 0.8));
+        }
+        #sidebar {
+            background: linear-gradient(180deg, #1a2a3d 0%, #2c3e50 100%);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        /* Winter theme calendar styles */
+        .fc {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .fc-toolbar-title {
+            color: #fff !important;
+        }
+        .fc-button {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: none !important;
+        }
+        .fc-day {
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+        .fc-daygrid-day-number {
+            color: #fff !important;
+        }
         .task-normal {
-            background-color: #28a745 !important;  /* Green for normal priority tasks */
-            border-color: #28a745 !important;
+            background: rgba(40, 167, 69, 0.7) !important;
         }
         .task-warning {
-            background-color: #ffc107 !important;  /* Yellow for warning/medium priority */
-            border-color: #ffc107 !important;
+            background: rgba(255, 193, 7, 0.7) !important;
         }
         .task-urgent {
-            background-color: #dc3545 !important;  /* Red for urgent/high priority */
-            border-color: #dc3545 !important;
+            background: rgba(220, 53, 69, 0.7) !important;
+        }
+        /* Snow effect */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        /* Season-specific themes */
+        .summer-theme {
+            background: linear-gradient(135deg, #ff8c42 0%, #ffb347 100%);
+            color: #fff;
+        }
+        .autumn-theme {
+            background: linear-gradient(135deg, #d4843f 0%, #c27b3d 100%);
+            color: #fff;
+        }
+        .winter-theme {
+            background: linear-gradient(135deg, #1a2a3d 0%, #2c3e50 100%);
+            color: #e0e0e0;
+        }
+        .spring-theme {
+            background: linear-gradient(135deg, #76b852 0%, #8DC26F 100%);
+            color: #fff;
         }
     </style>
 </head>
@@ -115,6 +181,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
     <script>
+        // Add this function before calendar initialization
+        function getAustralianSeasonForMonth(month) {
+            // month is 0-11 in JavaScript
+            month += 1; // Convert to 1-12
+            if (month === 12 || month <= 2) return 'summer';
+            if (month >= 3 && month <= 5) return 'autumn';
+            if (month >= 6 && month <= 8) return 'winter';
+            return 'spring';
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -156,7 +232,60 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                height: 'auto'
+                height: 'auto',
+                datesSet: function(info) {
+                    // Get the current month being displayed
+                    const currentMonth = info.view.currentStart.getMonth();
+                    const season = getAustralianSeasonForMonth(currentMonth);
+                    
+                    // Remove all season classes
+                    document.body.classList.remove('summer-theme', 'autumn-theme', 'winter-theme', 'spring-theme');
+                    // Add new season class
+                    document.body.classList.add(`${season}-theme`);
+
+                    // Update calendar colors based on season
+                    const seasonColors = {
+                        summer: {
+                            background: 'rgba(255, 140, 66, 0.1)',
+                            headerBackground: 'rgba(255, 140, 66, 0.3)'
+                        },
+                        autumn: {
+                            background: 'rgba(212, 132, 63, 0.1)',
+                            headerBackground: 'rgba(212, 132, 63, 0.3)'
+                        },
+                        winter: {
+                            background: 'rgba(41, 51, 92, 0.1)',
+                            headerBackground: 'rgba(41, 51, 92, 0.3)'
+                        },
+                        spring: {
+                            background: 'rgba(118, 184, 82, 0.1)',
+                            headerBackground: 'rgba(118, 184, 82, 0.3)'
+                        }
+                    };
+
+                    // Apply season-specific styles to calendar
+                    const calendarEl = document.querySelector('.fc');
+                    const headerEl = document.querySelector('.fc-header-toolbar');
+                    if (calendarEl && headerEl) {
+                        calendarEl.style.background = seasonColors[season].background;
+                        headerEl.style.background = seasonColors[season].headerBackground;
+                    }
+
+                    // Stop all existing seasonal effects
+                    clearInterval(window.seasonalEffectInterval);
+                    
+                    // Start new seasonal effect
+                    const effectFunctions = {
+                        summer: createHeatWave,
+                        autumn: createFallingLeaves,
+                        winter: createSnowflake,
+                        spring: createFloatingFlowers
+                    };
+
+                    if (effectFunctions[season]) {
+                        window.seasonalEffectInterval = setInterval(effectFunctions[season], 200);
+                    }
+                }
             });
             calendar.render();
         });
@@ -169,6 +298,90 @@
 
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Add snow effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = (Math.random() * 10 + 5) + 'px';
+            snowflake.innerHTML = '❄';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // Add seasonal theme detection
+        function getAustralianSeason() {
+            const month = new Date().getMonth() + 1;
+            if (month >= 12 || month <= 2) return 'summer';
+            if (month >= 3 && month <= 5) return 'autumn';
+            if (month >= 6 && month <= 8) return 'winter';
+            return 'spring';
+        }
+
+        function applySeasonalTheme() {
+            const season = getAustralianSeason();
+            document.body.className = `${season}-theme`;
+            
+            // Seasonal effects
+            if (season === 'summer') {
+                // Add heat waves effect
+                createHeatWave();
+            } else if (season === 'autumn') {
+                // Add falling leaves
+                createFallingLeaves();
+            } else if (season === 'winter') {
+                // Add snow effect
+                createSnowflake();
+            } else {
+                // Add floating flowers
+                createFloatingFlowers();
+            }
+        }
+
+        function createHeatWave() {
+            const wave = document.createElement('div');
+            wave.classList.add('heat-wave');
+            wave.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 3000);
+        }
+
+        function createFallingLeaves() {
+            const leaf = document.createElement('div');
+            leaf.innerHTML = '🍂';
+            leaf.classList.add('falling-leaf');
+            leaf.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(leaf);
+            setTimeout(() => leaf.remove(), 5000);
+        }
+
+        function createFloatingFlowers() {
+            const flower = document.createElement('div');
+            flower.innerHTML = '🌸';
+            flower.classList.add('floating-flower');
+            flower.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(flower);
+            setTimeout(() => flower.remove(), 5000);
+        }
+
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', function() {
+            applySeasonalTheme();
+            setInterval(() => {
+                const season = getAustralianSeason();
+                if (season === 'summer') setInterval(createHeatWave, 300);
+                if (season === 'autumn') setInterval(createFallingLeaves, 200);
+                if (season === 'winter') setInterval(createSnowflake, 100);
+                if (season === 'spring') setInterval(createFloatingFlowers, 200);
+            }, 1000);
+            // ...existing calendar code...
+        });
     </script>
 </body>
 </html>
