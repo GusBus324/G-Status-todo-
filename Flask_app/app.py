@@ -56,6 +56,7 @@ def signup():
     logo_path = url_for('static', filename='images/logo.png')
     return render_template('signup.html', logo_path=logo_path)
 
+# [SPEECH REFERENCE - User Authentication]
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -72,6 +73,7 @@ def login():
     logo_path = url_for('static', filename='images/logo.png')
     return render_template('login.html', logo_path=logo_path)
 
+# [SPEECH REFERENCE - Core Dashboard Logic]
 @app.route('/dashboard')
 def dashboard():
     user_id = session.get('user_id')
@@ -81,6 +83,7 @@ def dashboard():
     current_datetime = datetime.now()
     current_time = current_datetime.strftime('%I:%M:%S %p')
     
+    # [SPEECH REFERENCE - Task Status and Statistics Generation]
     # Get all todos and categorize them
     todos = db_session.query(ToDo)\
         .filter_by(user_id=user_id)\
@@ -93,6 +96,7 @@ def dashboard():
     upcoming_tasks = []
     completed_tasks = []
     
+    # [SPEECH REFERENCE - Task Color Coding Logic]
     for todo in todos:
         if todo.done:  # Completed tasks
             completed_tasks.append(todo)
@@ -106,7 +110,7 @@ def dashboard():
         else:
             upcoming_tasks.append(todo)
     
-    # Calculate statistics
+    # [SPEECH REFERENCE - Statistics Generation]
     stats = {
         'total': len(todos),
         'completed': len(completed_tasks),
@@ -116,19 +120,20 @@ def dashboard():
         'completion_rate': round((len(completed_tasks) / len(todos) * 100) if todos else 0, 1)
     }
     
+    # [SPEECH REFERENCE - Calendar Event Formatting]
     tasks_for_calendar = []
     for todo in todos:
         if todo.due_date:
             time_str = todo.due_time.strftime('%H:%M') if todo.due_time else ''
             
-            # Enhanced status-based coloring
-            if todo.done:  # Green (#28a745) for completed tasks
+            # [SPEECH REFERENCE - Task Status Color Coding]
+            if todo.done:  
                 color = '#28a745'  # Green for completed
-            elif todo.due_date < current_datetime.date():  # Red (#dc3545) for overdue tasks
+            elif todo.due_date < current_datetime.date():  
                 color = '#dc3545'  # Red for overdue
-            elif todo.due_date == current_datetime.date():  # Yellow (#ffc107) for due today
+            elif todo.due_date == current_datetime.date():  
                 color = '#ffc107'  # Yellow for due today
-            else:  # Blue (#007bff) for upcoming tasks
+            else:  
                 color = '#007bff'  # Blue for upcoming
             
             display_text = f"{todo.title} - Due: {time_str}" if time_str else todo.title
@@ -160,6 +165,7 @@ def dashboard():
                          current_time=current_time,
                          tasks_for_calendar=tasks_for_calendar)
 
+# [SPEECH REFERENCE - Task Management Routes]
 @app.route('/add_task', methods=['POST'])
 def add_task():
     user_id = session.get('user_id')
@@ -250,6 +256,7 @@ def index():
                          features=features, 
                          brand_info=brand_info)
 
+# [SPEECH REFERENCE - Session Management]
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
