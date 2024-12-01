@@ -7,10 +7,10 @@ from datetime import datetime, time
 import re
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # Replace with a secure, random key
+app.secret_key = "supersecretkey"  # Secret key for session management - should be changed in production
 
 # Set up the database engine and session
-engine = create_engine("sqlite:///todo.db")  # Ensure this points to your actual database file
+engine = create_engine("sqlite:///todo.db")  # Creates/connects to SQLite database file
 Session = sessionmaker(bind=engine)
 db_session = Session()
 
@@ -20,12 +20,12 @@ def signup():
         username = request.form['username']
         password = request.form['password']
 
-        # Password validation
-        if len(password) < 8:
+        # Password validation with security requirements
+        if len(password) < 8:  # Ensures minimum password length
             flash('Password must be at least 8 characters long.', 'danger')
             return redirect(url_for('signup'))
         
-        if not re.search(r'[A-Z]', password):
+        if not re.search(r'[A-Z]', password):  # Requires uppercase letter
             flash('Password must contain at least one uppercase letter.', 'danger')
             return redirect(url_for('signup'))
             
@@ -33,11 +33,11 @@ def signup():
             flash('Password must contain at least one lowercase letter.', 'danger')
             return redirect(url_for('signup'))
             
-        if not re.search(r'[0-9]', password):
+        if not re.search(r'[0-9]', password):  # Requires at least one number
             flash('Password must contain at least one number.', 'danger')
             return redirect(url_for('signup'))
             
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):  # Requires special character
             flash('Password must contain at least one special character.', 'danger')
             return redirect(url_for('signup'))
 
@@ -94,10 +94,10 @@ def dashboard():
     completed_tasks = []
     
     for todo in todos:
-        if todo.done:
+        if todo.done:  # Completed tasks
             completed_tasks.append(todo)
         elif todo.due_date:
-            if todo.due_date < current_datetime.date():
+            if todo.due_date < current_datetime.date():  # Overdue tasks
                 overdue_tasks.append(todo)
             elif todo.due_date == current_datetime.date():
                 due_today.append(todo)
@@ -122,13 +122,13 @@ def dashboard():
             time_str = todo.due_time.strftime('%H:%M') if todo.due_time else ''
             
             # Enhanced status-based coloring
-            if todo.done:
+            if todo.done:  # Green (#28a745) for completed tasks
                 color = '#28a745'  # Green for completed
-            elif todo.due_date < current_datetime.date():
+            elif todo.due_date < current_datetime.date():  # Red (#dc3545) for overdue tasks
                 color = '#dc3545'  # Red for overdue
-            elif todo.due_date == current_datetime.date():
+            elif todo.due_date == current_datetime.date():  # Yellow (#ffc107) for due today
                 color = '#ffc107'  # Yellow for due today
-            else:
+            else:  # Blue (#007bff) for upcoming tasks
                 color = '#007bff'  # Blue for upcoming
             
             display_text = f"{todo.title} - Due: {time_str}" if time_str else todo.title
