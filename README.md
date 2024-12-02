@@ -17,3 +17,9 @@ G Status/
 ├── models.py           # ORM models for User and ToDo entities
 ├── requirements.txt    # Python dependencies
 └── README.md           # Documentation
+G Status
+A Fast and aglie task managing aplication.
+
+https://github.com/GusBus324/G-Status-todo-.git
+
+Hi, I'm Gus a year 12 student.
