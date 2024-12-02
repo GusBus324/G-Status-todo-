@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a2a3d 0%, #2c3e50 100%);
+            color: #e0e0e0;
+        }
+        .logo-hover {
+            transition: transform 0.3s ease;
+        }
+        .logo-hover:hover {
+            transform: scale(1.2);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .card-body {
+            background: linear-gradient(45deg, rgba(41, 51, 92, 0.8), rgba(26, 33, 64, 0.8));
+        }
+        #sidebar {
+            background: linear-gradient(180deg, #1a2a3d 0%, #2c3e50 100%);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        /* Winter theme calendar styles */
+        .fc {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .fc-toolbar-title {
+            color: #fff !important;
+        }
+        .fc-button {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: none !important;
+        }
+        .fc-day {
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+        .fc-daygrid-day-number {
+            color: #fff !important;
+        }
+        .task-normal {
+            background: rgba(40, 167, 69, 0.7) !important;
+        }
+        .task-warning {
+            background: rgba(255, 193, 7, 0.7) !important;
+        }
+        .task-urgent {
+            background: rgba(220, 53, 69, 0.7) !important;
+        }
+        /* Snow effect */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        /* Season-specific themes */
+        .summer-theme {
+            background: linear-gradient(135deg, #ff8c42 0%, #ffb347 100%);
+            color: #fff;
+        }
+        .autumn-theme {
+            background: linear-gradient(135deg, #d4843f 0%, #c27b3d 100%);
+            color: #fff;
+        }
+        .winter-theme {
+            background: linear-gradient(135deg, #1a2a3d 0%, #2c3e50 100%);
+            color: #e0e0e0;
+        }
+        .spring-theme {
+            background: linear-gradient(135deg, #76b852 0%, #8DC26F 100%);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ logo_path }}" alt="Logo" class="logo-hover">
+            </div>
+
+            <div class="sidebar-content">
+                <h4 class="text-white p-3">Add New Task</h4>
+                <form action="{{ url_for('add_task') }}" method="post" class="p-3">
+                    <div class="form-group">
+                        <input type="text" name="title" class="form-control" placeholder="Task Title" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" name="due_date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="time" name="due_time" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Task</button>
+                </form>
+                
+                <div class="sidebar-footer">
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="row mb-4">
+                        <div class="col text-center">
+                            <div class="current-time">
+                                Current Time: <span id="clock">{{ current_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ...existing code... -->
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h3>Your Tasks</h3>
+                        {% for todo in todos %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ todo.title }}</h5>
+                                <p class="card-text">{{ todo.description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Due: {{ todo.due_date.strftime('%Y-%m-%d') if todo.due_date }}
+                                        {% if todo.due_time %}
+                                        at {{ todo.due_time.strftime('%H:%M') }}
+                                        {% endif %}
+                                    </small>
+                                </p>
+                                <a href="{{ url_for('edit_task', task_id=todo.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="{{ url_for('delete_task', task_id=todo.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your existing JavaScript imports and calendar initialization -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script>
+        // Add this function before calendar initialization
+        function getAustralianSeasonForMonth(month) {
+            // month is 0-11 in JavaScript
+            month += 1; // Convert to 1-12
+            if (month === 12 || month <= 2) return 'summer';
+            if (month >= 3 && month <= 5) return 'autumn';
+            if (month >= 6 && month <= 8) return 'winter';
+            return 'spring';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: {{ tasks_for_calendar | tojson | safe }},
+                eventDidMount: function(info) {
+                    // Add color-coding logic
+                    const now = new Date();
+                    const dueDate = new Date(info.event.start);
+                    const diffTime = dueDate - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffTime < 0) {
+                        // Overdue tasks
+                        info.el.classList.add('task-urgent');
+                    } else if (diffDays <= 1) {
+                        // Due within 24 hours
+                        info.el.classList.add('task-urgent');
+                    } else if (diffDays <= 7) {
+                        // Due within 7 days
+                        info.el.classList.add('task-warning');
+                    } else {
+                        // Due in more than 7 days
+                        info.el.classList.add('task-normal');
+                    }
+
+                    // Existing tooltip logic
+                    if (info.event.extendedProps.description) {
+                        $(info.el).tooltip({
+                            title: info.event.extendedProps.description,
+                            placement: 'top',
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                height: 'auto',
+                datesSet: function(info) {
+                    // Get the current month being displayed
+                    const currentMonth = info.view.currentStart.getMonth();
+                    const season = getAustralianSeasonForMonth(currentMonth);
+                    
+                    // Remove all season classes
+                    document.body.classList.remove('summer-theme', 'autumn-theme', 'winter-theme', 'spring-theme');
+                    // Add new season class
+                    document.body.classList.add(`${season}-theme`);
+
+                    // Update calendar colors based on season
+                    const seasonColors = {
+                        summer: {
+                            background: 'rgba(255, 140, 66, 0.1)',
+                            headerBackground: 'rgba(255, 140, 66, 0.3)'
+                        },
+                        autumn: {
+                            background: 'rgba(212, 132, 63, 0.1)',
+                            headerBackground: 'rgba(212, 132, 63, 0.3)'
+                        },
+                        winter: {
+                            background: 'rgba(41, 51, 92, 0.1)',
+                            headerBackground: 'rgba(41, 51, 92, 0.3)'
+                        },
+                        spring: {
+                            background: 'rgba(118, 184, 82, 0.1)',
+                            headerBackground: 'rgba(118, 184, 82, 0.3)'
+                        }
+                    };
+
+                    // Apply season-specific styles to calendar
+                    const calendarEl = document.querySelector('.fc');
+                    const headerEl = document.querySelector('.fc-header-toolbar');
+                    if (calendarEl && headerEl) {
+                        calendarEl.style.background = seasonColors[season].background;
+                        headerEl.style.background = seasonColors[season].headerBackground;
+                    }
+
+                    // Stop all existing seasonal effects
+                    clearInterval(window.seasonalEffectInterval);
+                    
+                    // Start new seasonal effect
+                    const effectFunctions = {
+                        summer: createHeatWave,
+                        autumn: createFallingLeaves,
+                        winter: createSnowflake,
+                        spring: createFloatingFlowers
+                    };
+
+                    if (effectFunctions[season]) {
+                        window.seasonalEffectInterval = setInterval(effectFunctions[season], 200);
+                    }
+                }
+            });
+            calendar.render();
+        });
+
+        function updateClock() {
+            const clock = document.getElementById('clock');
+            const now = new Date();
+            clock.textContent = now.toLocaleTimeString();
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Add snow effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = (Math.random() * 10 + 5) + 'px';
+            snowflake.innerHTML = '❄';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // Add seasonal theme detection
+        function getAustralianSeason() {
+            const month = new Date().getMonth() + 1;
+            if (month >= 12 || month <= 2) return 'summer';
+            if (month >= 3 && month <= 5) return 'autumn';
+            if (month >= 6 && month <= 8) return 'winter';
+            return 'spring';
+        }
+
+        function applySeasonalTheme() {
+            const season = getAustralianSeason();
+            document.body.className = `${season}-theme`;
+            
+            // Seasonal effects
+            if (season === 'summer') {
+                // Add heat waves effect
+                createHeatWave();
+            } else if (season === 'autumn') {
+                // Add falling leaves
+                createFallingLeaves();
+            } else if (season === 'winter') {
+                // Add snow effect
+                createSnowflake();
+            } else {
+                // Add floating flowers
+                createFloatingFlowers();
+            }
+        }
+
+        function createHeatWave() {
+            const wave = document.createElement('div');
+            wave.classList.add('heat-wave');
+            wave.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 3000);
+        }
+
+        function createFallingLeaves() {
+            const leaf = document.createElement('div');
+            leaf.innerHTML = '🍂';
+            leaf.classList.add('falling-leaf');
+            leaf.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(leaf);
+            setTimeout(() => leaf.remove(), 5000);
+        }
+
+        function createFloatingFlowers() {
+            const flower = document.createElement('div');
+            flower.innerHTML = '🌸';
+            flower.classList.add('floating-flower');
+            flower.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(flower);
+            setTimeout(() => flower.remove(), 5000);
+        }
+
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', function() {
+            applySeasonalTheme();
+            setInterval(() => {
+                const season = getAustralianSeason();
+                if (season === 'summer') setInterval(createHeatWave, 300);
+                if (season === 'autumn') setInterval(createFallingLeaves, 200);
+                if (season === 'winter') setInterval(createSnowflake, 100);
+                if (season === 'spring') setInterval(createFloatingFlowers, 200);
+            }, 1000);
+            // ...existing calendar code...
+        });
+    </script>
+</body>
+</html>
