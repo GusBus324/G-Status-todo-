@@ -83,7 +83,7 @@
             color: #fff;
         }
         .autumn-theme {
-            background: linear-gradient(135deg, #d4843f 0%, #c27b3d 100%);
+            background: linear-gradient(135deg, #974d0c 0%, #753701 100%);
             color: #fff;
         }
         .winter-theme {
@@ -93,6 +93,31 @@
         .spring-theme {
             background: linear-gradient(135deg, #76b852 0%, #8DC26F 100%);
             color: #fff;
+        }
+        /* Update floating flower animation styles */
+        .floating-flower {
+            position: absolute;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatAndSpin 5s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes floatAndSpin {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100%) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Add this to contain the flowers */
+        #calendar {
+            position: relative;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -362,15 +387,28 @@
         }
 
         function createFloatingFlowers() {
+            const calendar = document.getElementById('calendar');
             const flower = document.createElement('div');
-            flower.innerHTML = '🌸';
+            const flowers = ['🌸', '🌺', '🌹', '🌷', '💐'];
+            
+            flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
             flower.classList.add('floating-flower');
-            flower.style.left = Math.random() * 100 + 'vw';
-            document.body.appendChild(flower);
-            setTimeout(() => flower.remove(), 5000);
+            
+            // Position within calendar bounds
+            flower.style.left = Math.random() * 100 + '%';
+            flower.style.top = '0';
+            flower.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            
+            // Append to calendar instead of body
+            calendar.appendChild(flower);
+            
+            setTimeout(() => {
+                flower.remove();
+            }, 5000);
         }
 
-        // Initialize theme
+        // Remove or comment out the following block since we don't want continuous seasonal effects
+        /*
         document.addEventListener('DOMContentLoaded', function() {
             applySeasonalTheme();
             setInterval(() => {
@@ -380,8 +418,8 @@
                 if (season === 'winter') setInterval(createSnowflake, 100);
                 if (season === 'spring') setInterval(createFloatingFlowers, 200);
             }, 1000);
-            // ...existing calendar code...
         });
+        */
     </script>
 </body>
 </html>
