@@ -45,6 +45,61 @@
             font-weight: bold;
             color: #667eea;
         }
+        
+        .bg-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .bg-animation div {
+            position: absolute;
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 32px;
+            font-weight: 500;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 25px rgba(255, 255, 255, 0.6);
+            animation: float-gentle 15s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        .bg-animation div:hover {
+            color: rgba(255, 255, 255, 1);
+            transform: scale(1.2);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 1),
+                         0 0 30px rgba(255, 255, 255, 0.8);
+        }
+
+        .bg-animation div:nth-child(1) { top: 15%; left: 15%; animation-delay: 0s; }
+        .bg-animation div:nth-child(2) { top: 25%; left: 65%; animation-delay: -3s; }
+        .bg-animation div:nth-child(3) { top: 45%; left: 35%; animation-delay: -6s; }
+        .bg-animation div:nth-child(4) { top: 65%; left: 70%; animation-delay: -9s; }
+        .bg-animation div:nth-child(5) { top: 75%; left: 25%; animation-delay: -12s; }
+
+        @keyframes float-gentle {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            25% {
+                transform: translate(30px, -20px);
+            }
+            50% {
+                transform: translate(-10px, 25px);
+            }
+            75% {
+                transform: translate(-25px, -15px);
+            }
+        }
+        
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
     </style>
 </head>
 <body>
@@ -52,7 +107,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="{{ logo_path }}" alt="Logo 2" height="40">
+                <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="logo2.png" height="40">
             </a>
             <div class="ms-auto">
                 <a href="{{ url_for('login') }}" class="btn btn-outline-primary me-2">Login</a>
@@ -64,12 +119,11 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="bg-animation">
-            <!-- Add 5 animation elements -->
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div>G Status</div>
+            <div>Fast</div>
+            <div>Agile</div>
+            <div>Efficient</div>
+            <div>Reliable</div>
         </div>
         <div class="container">
             <div class="text-center mb-5">

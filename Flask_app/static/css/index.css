@@ -11,7 +11,7 @@
     animation: float 3s ease-in-out infinite;
     margin-bottom: 2rem;
     max-width: 300px;
-    filter: drop-shadow(0 0 10px rgba(255, 223, 0, 0.3));  /* Golden glow effect on logo */
+    filter: drop-shadow(0 0 10px rgba(255, 221, 0, 0.597));  /* Golden glow effect on logo */
 }
 
 .welcome-text {
@@ -54,7 +54,7 @@
 
 .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255, 223, 0, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 221, 0, 0.787);
 }
 
 @keyframes float {
@@ -78,4 +78,26 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.bg-animation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.bg-animation > div {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(230, 3, 3, 0.503);
+    animation: float 15s infinite;
+}
+
+/* Each div can have different sizes/positions/animations */
+.bg-animation > div:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    left: 20%;
+    animation-delay: 1s;
 }
